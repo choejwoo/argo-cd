@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ConfigManagementPlugin
+metadata:
+  name: transcrypt
+spec:
+  init:
+    command: [sh, -c]
+    args:
+      - |
+        # ArgoCD has ARGOCD_ENV_ prefix for environment variables
+        PASSWORD="${ARGOCD_ENV_TRANSCRYPT_PASSWORD:-$TRANSCRYPT_PASSWORD}"
+        if [ -z "$PASSWORD" ]; then
+          echo "ERROR: TRANSCRYPT_PASSWORD is not set" >&2
+          exit 1
+        fi
+        echo "Running transcrypt..." >&2
+        /home/${USER}/bin/transcrypt -c aes-256-cbc -p "$PASSWORD" -y
+  generate:
+    command: [sh, -c]
+    args:
+      - |
+        echo "Building kustomization..." >&2
+        /home/${USER}/bin/kustomize build .
+  discover:
+    find:
+      command: [sh, -c, 'find . .. ../.. -maxdepth 3 -name "*.secret.yaml" -o -name "*.secret.yml" | head -1']
+  provideGitCreds: true
+  preserveFileMode: true
+

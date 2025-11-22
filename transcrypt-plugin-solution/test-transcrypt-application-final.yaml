@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: test-transcrypt
+  namespace: default
+spec:
+  project: default
+  source:
+    repoURL: /tmp/test-transcrypt-repo
+    path: k8s/staging
+    plugin:
+      name: transcrypt
+      env:
+        - name: TRANSCRYPT_PASSWORD
+          value: test-password-123
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+

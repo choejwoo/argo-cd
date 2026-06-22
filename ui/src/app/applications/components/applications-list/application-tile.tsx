@@ -255,15 +255,17 @@ export const ApplicationTile = ({app, selected, pref, ctx, tileRef, syncApplicat
                     {/* Action buttons */}
                     <div className='row applications-tiles__actions'>
                         <div className='columns applications-list__entry--actions'>
-                            <a
-                                className='argo-button argo-button--base'
-                                qe-id='applications-tiles-button-sync'
-                                onClick={e => {
-                                    e.stopPropagation();
-                                    syncApplication(app.metadata.name, app.metadata.namespace);
-                                }}>
-                                <i className='fa fa-sync' /> Sync
-                            </a>
+                            <Tooltip className='applications-tiles__action-tooltip' content={'Sync'}>
+                                <a
+                                    className='argo-button argo-button--base'
+                                    qe-id='applications-tiles-button-sync'
+                                    onClick={e => {
+                                        e.stopPropagation();
+                                        syncApplication(app.metadata.name, app.metadata.namespace);
+                                    }}>
+                                    <i className='fa fa-sync' /> <span className='show-for-xxlarge'>Sync</span>
+                                </a>
+                            </Tooltip>
                             &nbsp;
                             <Tooltip className='applications-tiles__action-tooltip' content={'Refresh'}>
                                 <a
